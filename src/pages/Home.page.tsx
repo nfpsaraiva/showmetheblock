@@ -1,37 +1,35 @@
-import { Accordion, ActionIcon, Anchor, AppShell, Button, Card, Collapse, Group, Loader, NumberInput, Stack, Text, Title } from "@mantine/core";
-import { Alchemy, Network } from "alchemy-sdk";
+import { ActionIcon, AppShell, Card, Group, Loader, NumberInput, Stack, Text, Title, Transition } from "@mantine/core";
 import { useEffect, useState } from "react";
 import ColorThemeSwitcher from "../components/ColorThemeSwitcher/ColorThemeSwitcher";
-import { IconArrowLeft, IconArrowRight, IconCube, IconExternalLink } from '@tabler/icons-react';
-import { useBlockQuery } from "../api/blockApi";
-import ExplorerItem from "../features/BlockAddress/BlockAddress";
+import { IconArrowLeft, IconArrowRight, IconCube } from '@tabler/icons-react';
+import { useBlockQuery, useLastBlockNumberQuery } from "../api/blockApi";
 import BlockAddress from "../features/BlockAddress/BlockAddress";
+import { useDisclosure } from "@mantine/hooks";
 
 export function HomePage() {
-  const [blockNumber, setBlockNumber] = useState<string | number>(0);
+  const [blockNumber, setBlockNumber] = useState<number | string>(0);
+  const { data: lastBlockNumber } = useLastBlockNumberQuery();
   const { data: block, isLoading } = useBlockQuery(Number(blockNumber));
-
-  const client = new Alchemy({
-    apiKey: import.meta.env.VITE_APP_ALCHEMY_API_KEY,
-    network: Network.ETH_MAINNET,
-  });
-
-  const getCurrentBlock = async () => {
-    const latestBlockNumber = await client.core.getBlockNumber();
-
-    setBlockNumber(latestBlockNumber);
-  }
+  const [mounted, mountedHandle] = useDisclosure(false);
 
   useEffect(() => {
-    getCurrentBlock();
-  }, []);
+    if (lastBlockNumber && blockNumber === 0) {
+      setBlockNumber(lastBlockNumber);
+    }
+  }, [lastBlockNumber]);
+
+  useEffect(() => {
+    if (isLoading) {
+      mountedHandle.close();
+    } else {
+      
+      mountedHandle.open();
+    }
+  }, [block])
+
 
   return (
-    <AppShell
-      header={{ height: 60 }}
-      footer={{ height: 60 }}
-      padding="md"
-    >
+    <AppShell header={{ height: 60 }} footer={{ height: 60 }} padding="md">
       <AppShell.Header withBorder={false}>
         <Group justify="space-between" h="100%" px="md">
           <ActionIcon component="a" href="/" variant="transparent">
@@ -70,19 +68,28 @@ export function HomePage() {
           }
           {
             block &&
-            <Card withBorder radius={"lg"} shadow="md">
-              <Card.Section inheritPadding py={"md"} withBorder>
-                <Group justify="space-between">
-                  <Title order={3}>Block #{block.number}</Title>
-                  <BlockAddress number={block.number} label="View in explorer" />
-                </Group>
-              </Card.Section>
-              <Stack my={"xl"}>
-                <Group justify="space-between">
-                  <Text>Miner</Text>
-                </Group>
-              </Stack>
-            </Card>
+            <Transition
+              mounted={mounted}
+              transition="slide-right"
+              duration={400}
+              timingFunction="ease"
+            >
+              {(styles) => <div style={styles}>
+                <Card withBorder radius={"lg"} shadow="md">
+                  <Card.Section inheritPadding py={"md"} withBorder>
+                    <Group justify="space-between">
+                      <Title order={3}>Block #{block.number}</Title>
+                      <BlockAddress number={block.number} label="View in explorer" />
+                    </Group>
+                  </Card.Section>
+                  <Stack my={"xl"}>
+                    <Group justify="space-between">
+                      <Text>Miner</Text>
+                    </Group>
+                  </Stack>
+                </Card>
+              </div>}
+            </Transition>
           }
         </Stack>
       </AppShell.Main>
