@@ -1,32 +1,15 @@
-import { ActionIcon, AppShell, Card, Group, Loader, NumberInput, Stack, Text, Title, Transition } from "@mantine/core";
+import { ActionIcon, AppShell, Card, Group, Loader, NumberInput, Stack, Text, TextInput, Title, Transition } from "@mantine/core";
 import { useEffect, useState } from "react";
 import ColorThemeSwitcher from "../components/ColorThemeSwitcher/ColorThemeSwitcher";
 import { IconArrowLeft, IconArrowRight, IconCube } from '@tabler/icons-react';
-import { useBlockQuery, useLastBlockNumberQuery } from "../api/blockApi";
+import { useBlockQuery, useBlocksQuery, useLastBlockNumberQuery } from "../api/blockApi";
 import BlockAddress from "../features/BlockAddress/BlockAddress";
 import { useDisclosure } from "@mantine/hooks";
 
 export function HomePage() {
-  const [blockNumber, setBlockNumber] = useState<number | string>(0);
+  const [blockNumber, setBlockNumber] = useState<string>('');
   const { data: lastBlockNumber } = useLastBlockNumberQuery();
-  const { data: block, isLoading } = useBlockQuery(Number(blockNumber));
-  const [mounted, mountedHandle] = useDisclosure(false);
-
-  useEffect(() => {
-    if (lastBlockNumber && blockNumber === 0) {
-      setBlockNumber(lastBlockNumber);
-    }
-  }, [lastBlockNumber]);
-
-  useEffect(() => {
-    if (isLoading) {
-      mountedHandle.close();
-    } else {
-      
-      mountedHandle.open();
-    }
-  }, [block])
-
+  const {data: blocks, isLoading} = useBlocksQuery([1,2,3]);
 
   return (
     <AppShell header={{ height: 60 }} footer={{ height: 60 }} padding="md">
@@ -43,38 +26,26 @@ export function HomePage() {
           <Stack justify="center" align="center">
             <Title ff={"mono"} lts={10}>show me the block</Title>
             <Group justify="center">
-              <ActionIcon variant="subtle">
-                <IconArrowLeft />
-              </ActionIcon>
-              <NumberInput
+              <TextInput
                 placeholder="Enter a numer"
                 rightSection={<></>}
                 variant="unstyled"
                 autoFocus
                 size="xl"
-                min={1}
                 prefix="#"
                 w={"auto"}
                 value={blockNumber}
-                onChange={setBlockNumber}
+                onChange={e => setBlockNumber(e.target.value)}
               />
-              <ActionIcon variant="subtle">
-                <IconArrowRight />
-              </ActionIcon>
             </Group>
           </Stack>
           {
             isLoading && <Loader />
           }
           {
-            block &&
-            <Transition
-              mounted={mounted}
-              transition="slide-right"
-              duration={400}
-              timingFunction="ease"
-            >
-              {(styles) => <div style={styles}>
+            blocks &&
+            blocks.map(block => {
+              return (
                 <Card withBorder radius={"lg"} shadow="md">
                   <Card.Section inheritPadding py={"md"} withBorder>
                     <Group justify="space-between">
@@ -88,8 +59,8 @@ export function HomePage() {
                     </Group>
                   </Stack>
                 </Card>
-              </div>}
-            </Transition>
+              )
+            })
           }
         </Stack>
       </AppShell.Main>
