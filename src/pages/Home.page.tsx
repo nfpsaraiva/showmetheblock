@@ -1,42 +1,40 @@
-import { ActionIcon, AppShell, Card, Group, Loader, NumberInput, Stack, Text, TextInput, Title, Transition } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { ActionIcon, AppShell, Center, Group, Loader, Popover, Stack, Text, TextInput, Title } from "@mantine/core";
+import { useState } from "react";
 import ColorThemeSwitcher from "../components/ColorThemeSwitcher/ColorThemeSwitcher";
-import { IconArrowLeft, IconArrowRight, IconCube } from '@tabler/icons-react';
-import { useBlockQuery, useBlocksQuery, useLastBlockNumberQuery } from "../api/blockApi";
-import BlockAddress from "../features/BlockAddress/BlockAddress";
-import { useDisclosure } from "@mantine/hooks";
+import { IconCube } from '@tabler/icons-react';
+import { useBlocksQuery, useLastBlockNumberQuery } from "../api/blockApi";
 
 export function HomePage() {
   const [blockNumber, setBlockNumber] = useState<string>('');
   const { data: lastBlockNumber } = useLastBlockNumberQuery();
-  const {data: blocks, isLoading} = useBlocksQuery([1,2,3]);
+  const { data: blocks, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage, isFetching } = useBlocksQuery(lastBlockNumber || 0);
 
   return (
     <AppShell header={{ height: 60 }} footer={{ height: 60 }} padding="md">
       <AppShell.Header withBorder={false}>
         <Group justify="space-between" h="100%" px="md">
-          <ActionIcon component="a" href="/" variant="transparent">
-            <IconCube size={30} />
-          </ActionIcon>
+          <Group>
+            <Title size={"xl"} ff={"mono"} lts={6}>show me the block</Title>
+            <TextInput
+              placeholder="Search"
+              rightSection={<></>}
+              autoFocus
+              size="md"
+              prefix="#"
+              w={"auto"}
+              value={blockNumber}
+              onChange={e => setBlockNumber(e.target.value)}
+            />
+          </Group>
           <ColorThemeSwitcher />
         </Group>
       </AppShell.Header>
       <AppShell.Main>
         <Stack gap={"xl"} align="center">
           <Stack justify="center" align="center">
-            <Title ff={"mono"} lts={10}>show me the block</Title>
+
             <Group justify="center">
-              <TextInput
-                placeholder="Enter a numer"
-                rightSection={<></>}
-                variant="unstyled"
-                autoFocus
-                size="xl"
-                prefix="#"
-                w={"auto"}
-                value={blockNumber}
-                onChange={e => setBlockNumber(e.target.value)}
-              />
+
             </Group>
           </Stack>
           {
@@ -44,24 +42,41 @@ export function HomePage() {
           }
           {
             blocks &&
-            blocks.map(block => {
-              return (
-                <Card withBorder radius={"lg"} shadow="md">
-                  <Card.Section inheritPadding py={"md"} withBorder>
-                    <Group justify="space-between">
-                      <Title order={3}>Block #{block.number}</Title>
-                      <BlockAddress number={block.number} label="View in explorer" />
-                    </Group>
-                  </Card.Section>
-                  <Stack my={"xl"}>
-                    <Group justify="space-between">
-                      <Text>Miner</Text>
-                    </Group>
-                  </Stack>
-                </Card>
-              )
+            blocks.pages.map(page => {
+              return page.map(block => {
+                return (
+                  <Popover position="right">
+                    <Popover.Target>
+                      <Stack my={"lg"}>
+                        <ActionIcon variant="subtle" size={100}>
+                          <IconCube size={50} />
+                        </ActionIcon>
+                        <Center>
+                          <Text size="xs">{block.number}</Text>
+                        </Center>
+                      </Stack>
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                      {block.hash}
+                    </Popover.Dropdown>
+                  </Popover>
+                )
+              })
             })
           }
+          <div>
+            <button
+              onClick={() => fetchNextPage()}
+              disabled={!hasNextPage || isFetchingNextPage}
+            >
+              {isFetchingNextPage
+                ? 'Loading more...'
+                : hasNextPage
+                  ? 'Load More'
+                  : 'Nothing more to load'}
+            </button>
+          </div>
+          <div>{isFetching && !isFetchingNextPage ? 'Fetching...' : null}</div>
         </Stack>
       </AppShell.Main>
       <AppShell.Footer withBorder={false}>

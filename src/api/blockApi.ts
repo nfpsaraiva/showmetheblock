@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Alchemy, Network } from "alchemy-sdk";
 
 const client = new Alchemy({
@@ -16,16 +16,24 @@ const useBlockQuery = (blockNumber: number) => {
     })
 }
 
-const useBlocksQuery = (blocksNumbers: number[]) => {
-    return useQuery({
-        queryKey: ['blocks', blocksNumbers],
-        queryFn: async () => {
+const useBlocksQuery = (lastBlockNumber: number) => {
+    return useInfiniteQuery({
+        queryKey: ['blocks'],
+        queryFn: async ({ pageParam }) => {
+            let blocksNumbers = [];
+            for (let i = pageParam; i > (pageParam - 10); i--) blocksNumbers.push(i);
+
             return await Promise.all(blocksNumbers.map(async number => {
                 return await client.core.getBlockWithTransactions(number);
             }));
-
         },
-        enabled: blocksNumbers.length > 0
+        initialPageParam: lastBlockNumber,
+        getNextPageParam: (lastPage, pages) => {
+            if (lastPage.length < 10) return null;
+
+            return lastBlockNumber - (10 * pages.length);
+        },
+        enabled: lastBlockNumber > 0
     })
 }
 
