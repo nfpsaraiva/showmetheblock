@@ -20,7 +20,7 @@ const Block: FC<BlockProps> = ({ block }: BlockProps) => {
               ({block.timestamp})
             </Text>
           </Group>
-          <ActionIcon variant="subtle">
+          <ActionIcon variant="subtle" component="a" target="_blank" href={`https://etherscan.io/block/${block.number}`}>
             <IconExternalLink size={14} />
           </ActionIcon>
         </Group>
