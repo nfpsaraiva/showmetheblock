@@ -3,6 +3,7 @@ import { FC } from "react";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import BlockList from "../../../features/BlockList/BlockList";
+import ScrollToTop from "../../../features/ScrollToTop/ScrollToTop";
 
 const AppShell: FC = () => {
   return (
@@ -14,8 +15,9 @@ const AppShell: FC = () => {
       <MantineAppShell.Header withBorder={false}>
         <Header />
       </MantineAppShell.Header>
-      <MantineAppShell.Main maw={600} mx={"auto"}>
+      <MantineAppShell.Main maw={500} mx={"auto"}>
         <BlockList />
+        <ScrollToTop />
       </MantineAppShell.Main>
       <MantineAppShell.Footer withBorder={false}>
         <Footer />
