@@ -1,11 +1,11 @@
-import { Group, Stack, Text } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { FC } from "react";
-import Header from "../Header/Header";
+import BlockList from "../../../features/BlockList/BlockList";
 
 const Main: FC = () => {
   return (
     <Stack gap={"xl"} align="center">
-      <Header />
+      <BlockList />
     </Stack>
   )
 }

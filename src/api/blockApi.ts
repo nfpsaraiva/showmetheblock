@@ -6,16 +6,6 @@ const client = new Alchemy({
     network: Network.ETH_MAINNET,
 });
 
-const useBlockQuery = (blockNumber: number) => {
-    return useQuery({
-        queryKey: ['blocks', blockNumber],
-        queryFn: async () => {
-            return await client.core.getBlockWithTransactions(blockNumber);
-        },
-        enabled: blockNumber > 0
-    })
-}
-
 const useBlocksQuery = (lastBlockNumber: number) => {
     return useInfiniteQuery({
         queryKey: ['blocks'],
@@ -48,7 +38,6 @@ const useLastBlockNumberQuery = () => {
 }
 
 export {
-    useBlockQuery,
     useBlocksQuery,
     useLastBlockNumberQuery
 }
