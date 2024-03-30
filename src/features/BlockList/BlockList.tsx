@@ -24,7 +24,7 @@ const BlockList: FC = () => {
             }
             {
                 blocks &&
-                    <Accordion variant="separated" radius={"md"} chevron="">
+                    <Accordion variant="filled" radius={"md"} chevron="">
                         {
                             blocks.pages.map(page => {
                                 return page.map(block => <Block block={block} />)

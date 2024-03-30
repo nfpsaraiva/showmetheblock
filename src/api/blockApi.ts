@@ -30,10 +30,7 @@ const useBlocksQuery = (lastBlockNumber: number) => {
 const useLastBlockNumberQuery = () => {
     return useQuery({
         queryKey: ['block', 'latest'],
-        queryFn: async () => {
-            return await client.core.getBlockNumber();
-
-        },
+        queryFn: () => client.core.getBlockNumber(),
     })
 }
 

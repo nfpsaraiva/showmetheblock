@@ -1,4 +1,4 @@
-import { Group, Stack, TextInput, Title } from "@mantine/core";
+import { Center, Group, Stack, TextInput, Title } from "@mantine/core";
 import { FC } from "react";
 import useStore from "../../../state/store";
 import { useShallow } from "zustand/react/shallow";
@@ -15,7 +15,9 @@ const Header: FC = () => {
   return (
     <Group justify="center" h="100%">
       <Stack gap={"xl"}>
-        <Title size={24} ff={"mono"} lts={15}>show me the block</Title>
+        <Center>
+          <Title size={24} ff={"mono"} lts={15}>show me the block</Title>
+        </Center>
         <TextInput
           placeholder="Search"
           rightSection={<></>}
