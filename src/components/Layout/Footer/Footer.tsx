@@ -1,11 +1,17 @@
-import { Group, Text } from "@mantine/core";
+import { Anchor, Center, Group, Text } from "@mantine/core";
 import { FC } from "react";
 
 const Footer: FC = () => {
   return (
-    <Group h={"100%"} justify="center">
-      <Text size="sm">2024 nfpsaraiva</Text>
-    </Group>
+    <Center h={"100%"}>
+      <Anchor
+        href="https://nfpsaraiva.com"
+        target="_blank"
+        underline="never"
+        size="sm"
+        c="var(--mantine-color-green)"
+      >2024 nfpsaraiva.com</Anchor>
+    </Center>
   )
 }
 

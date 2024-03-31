@@ -6,12 +6,12 @@ const client = new Alchemy({
     network: Network.ETH_MAINNET,
 });
 
-const useBlocksQuery = (lastBlockNumber: number) => {
+const useBlocksQuery = (lastBlockNumber: number, limit: number = 10) => {
     return useInfiniteQuery({
         queryKey: ['blocks'],
         queryFn: async ({ pageParam }) => {
             let blocksNumbers = [];
-            for (let i = pageParam; i > (pageParam - 10); i--) blocksNumbers.push(i);
+            for (let i = pageParam; i > (pageParam - limit); i--) blocksNumbers.push(i);
 
             return await Promise.all(blocksNumbers.map(async number => {
                 return await client.core.getBlockWithTransactions(number);
@@ -19,9 +19,9 @@ const useBlocksQuery = (lastBlockNumber: number) => {
         },
         initialPageParam: lastBlockNumber,
         getNextPageParam: (lastPage, pages) => {
-            if (lastPage.length < 10) return null;
+            if (lastPage.length < limit) return null;
 
-            return lastBlockNumber - (10 * pages.length);
+            return lastBlockNumber - (limit * pages.length);
         },
         enabled: lastBlockNumber > 0
     })
@@ -29,7 +29,7 @@ const useBlocksQuery = (lastBlockNumber: number) => {
 
 const useLastBlockNumberQuery = () => {
     return useQuery({
-        queryKey: ['block', 'latest'],
+        queryKey: ['blocks', 'latest'],
         queryFn: () => client.core.getBlockNumber(),
     })
 }

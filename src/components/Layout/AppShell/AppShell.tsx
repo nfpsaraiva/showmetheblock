@@ -8,7 +8,7 @@ import ScrollToTop from "../../../features/ScrollToTop/ScrollToTop";
 const AppShell: FC = () => {
   return (
     <MantineAppShell
-      header={{ height: 150 }}
+      header={{ height: 220 }}
       footer={{ height: 60 }}
       padding="md"
     >

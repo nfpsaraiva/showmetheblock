@@ -10,19 +10,21 @@ interface BlockProps {
 const Block: FC<BlockProps> = ({ block }: BlockProps) => {
   return (
     <Accordion.Item value={block.hash}>
-      <Accordion.Control icon={<IconCube size={16} />}>
+      <Accordion.Control icon={<IconCube size={20} />}>
         <Group justify="space-between">
           <Group>
             <Text>
-              {block.number}
-            </Text>
-            <Text size="xs">
-              ({block.timestamp})
+              #{block.number}
             </Text>
           </Group>
-          <ActionIcon variant="subtle" component="a" target="_blank" href={`https://etherscan.io/block/${block.number}`}>
-            <IconExternalLink size={14} />
-          </ActionIcon>
+          <Group>
+            <Text size="xs">
+              {block.transactions.length} transactions
+            </Text>
+            <ActionIcon variant="subtle" component="a" target="_blank" href={`https://etherscan.io/block/${block.number}`}>
+              <IconExternalLink size={14} />
+            </ActionIcon>
+          </Group>
         </Group>
       </Accordion.Control>
       <Accordion.Panel>
