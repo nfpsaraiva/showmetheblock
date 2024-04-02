@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Alchemy, AssetTransfersCategory, Network } from "alchemy-sdk";
+import Block from "../types/Block";
 
 const client = new Alchemy({
     apiKey: import.meta.env.VITE_APP_ALCHEMY_API_KEY,
@@ -14,20 +15,42 @@ const useBlocksQuery = (address: string) => {
                 fromAddress: address,
                 category: [
                     AssetTransfersCategory.EXTERNAL,
-                    AssetTransfersCategory.INTERNAL,
                     AssetTransfersCategory.ERC20,
                 ]
             });
 
-            const blocksNums = transfers.transfers.map(transfer => {
-                return transfer.blockNum
-            });
+            let blocks: Block[] = [];
 
-            const uniqueNums = [...new Set(blocksNums)];
+            for (const transfer of transfers.transfers) {
+                const block = blocks.find(b => b.number === transfer.blockNum);
 
-            return Promise.all(uniqueNums.reverse().map(async num => {
-                return await client.core.getBlockWithTransactions(num);
-            }))
+                if (block) {
+                    blocks = blocks.filter(b => b.number !== transfer.blockNum);
+                    blocks.push({
+                        ...block,
+                        sents: block.sents + 1
+                    });
+
+                    continue;
+                }
+
+
+                blocks.push({
+                    number: transfer.blockNum,
+                    timestamp: 123,
+                    sents: 1,
+                    receives: 1
+                });
+            }
+
+            return await Promise.all(blocks.map(async block => {
+                const b = await client.core.getBlockWithTransactions(block.number);
+
+                return {
+                    ...block,
+                    timestamp: b.timestamp
+                }
+            }));
         },
         enabled: address !== ""
     })
