@@ -1,8 +1,16 @@
+interface Transfer {
+  address: string | null;
+  value: number | null;
+}
+
+
+
 interface Block {
-  number: string;
+  hexNum: string;
+  number: number;
   timestamp: number;
-  sents: number;
-  receives: number;
+  sents: Transfer[];
+  receives: Transfer[];
 }
 
 export default Block;

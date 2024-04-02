@@ -39,7 +39,7 @@ const BlockList: FC = () => {
             {
               blocks.map(block => {
                 return (
-                  <Accordion.Item key={block.timestamp} value={block.number}>
+                  <Accordion.Item key={block.timestamp} value={block.hexNum}>
                     <Accordion.Control icon={<IconCube size={20} />}>
                       <Group justify="space-between">
                         <Group>
@@ -48,8 +48,8 @@ const BlockList: FC = () => {
                           </Text>
                         </Group>
                         <Group>
-                          <Button leftSection={<IconArrowUp />}>{block.sents}</Button>
-                          <Button leftSection={<IconArrowDown />}>{block.receives}</Button>
+                          <Button leftSection={<IconArrowUp />}>{block.sents.length}</Button>
+                          <Button leftSection={<IconArrowDown />}>{block.receives.length}</Button>
                           <ActionIcon variant="subtle" component="a" target="_blank" href={`https://etherscan.io/block/${block.number}`}>
                             <IconExternalLink size={14} />
                           </ActionIcon>

@@ -11,7 +11,9 @@ const useBlocksQuery = (address: string) => {
     return useQuery({
         queryKey: ['blocks'],
         queryFn: async () => {
-            const transfers = await client.core.getAssetTransfers({
+            let blocks: Block[] = [];
+            
+            const transfersFrom = await client.core.getAssetTransfers({
                 fromAddress: address,
                 category: [
                     AssetTransfersCategory.EXTERNAL,
@@ -19,38 +21,89 @@ const useBlocksQuery = (address: string) => {
                 ]
             });
 
-            let blocks: Block[] = [];
+            const transfersTo = await client.core.getAssetTransfers({
+                fromAddress: address,
+                category: [
+                    AssetTransfersCategory.EXTERNAL,
+                    AssetTransfersCategory.ERC20,
+                ]
+            });
 
-            for (const transfer of transfers.transfers) {
-                const block = blocks.find(b => b.number === transfer.blockNum);
+            for (const transfer of transfersFrom.transfers) {
+                const block = blocks.find(b => b.hexNum === transfer.blockNum);
 
-                if (block) {
-                    blocks = blocks.filter(b => b.number !== transfer.blockNum);
+                if (!block) {
                     blocks.push({
-                        ...block,
-                        sents: block.sents + 1
+                        hexNum: transfer.blockNum,
+                        number: 0,
+                        timestamp: 123,
+                        sents: [
+                            {
+                                address: transfer.to,
+                                value: transfer.value
+                            }
+                        ],
+                        receives: []
                     });
 
                     continue;
                 }
 
-
+                blocks = blocks.filter(b => b.hexNum !== transfer.blockNum);
                 blocks.push({
-                    number: transfer.blockNum,
-                    timestamp: 123,
-                    sents: 1,
-                    receives: 1
+                    ...block,
+                    sents: [
+                        ...block.sents,
+                        {
+                            address: transfer.to,
+                            value: transfer.value
+                        }
+                    ]
                 });
             }
 
-            return await Promise.all(blocks.map(async block => {
-                const b = await client.core.getBlockWithTransactions(block.number);
+            for (const transfer of transfersTo.transfers) {
+                const block = blocks.find(b => b.hexNum === transfer.blockNum);
+
+                if (!block) {
+                    blocks.push({
+                        hexNum: transfer.blockNum,
+                        number: 0,
+                        timestamp: 123,
+                        sents: [],
+                        receives: [{
+                            address: transfer.from,
+                            value: transfer.value
+                        }]
+                    });
+
+                    continue;
+                }
+
+                blocks = blocks.filter(b => b.hexNum !== transfer.blockNum);
+                blocks.push({
+                    ...block,
+                    receives: [
+                        ...block.receives,
+                        {
+                            address: transfer.from,
+                            value: transfer.value
+                        }
+                    ]
+                });
+            }
+
+            blocks = await Promise.all(blocks.map(async block => {
+                const b = await client.core.getBlockWithTransactions(block.hexNum);
 
                 return {
                     ...block,
+                    number: b.number,
                     timestamp: b.timestamp
                 }
             }));
+
+            return blocks;
         },
         enabled: address !== ""
     })
