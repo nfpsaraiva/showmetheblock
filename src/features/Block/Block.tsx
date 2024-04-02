@@ -8,19 +8,22 @@ interface BlockProps {
 }
 
 const Block: FC<BlockProps> = ({ block }: BlockProps) => {
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp * 1000);
+
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+  }
+
   return (
     <Accordion.Item value={block.hash}>
       <Accordion.Control icon={<IconCube size={20} />}>
         <Group justify="space-between">
           <Group>
             <Text>
-              #{block.number}
+              {formatDate(block.timestamp)}
             </Text>
           </Group>
           <Group>
-            <Text size="xs">
-              {block.transactions.length} transactions
-            </Text>
             <ActionIcon variant="subtle" component="a" target="_blank" href={`https://etherscan.io/block/${block.number}`}>
               <IconExternalLink size={14} />
             </ActionIcon>

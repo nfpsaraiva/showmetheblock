@@ -1,40 +1,38 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { Alchemy, Network } from "alchemy-sdk";
+import { useQuery } from "@tanstack/react-query";
+import { Alchemy, AssetTransfersCategory, Network } from "alchemy-sdk";
 
 const client = new Alchemy({
     apiKey: import.meta.env.VITE_APP_ALCHEMY_API_KEY,
     network: Network.ETH_MAINNET,
 });
 
-const useBlocksQuery = (lastBlockNumber: number, limit: number = 10) => {
-    return useInfiniteQuery({
-        queryKey: ['blocks'],
-        queryFn: async ({ pageParam }) => {
-            let blocksNumbers = [];
-            for (let i = pageParam; i > (pageParam - limit); i--) blocksNumbers.push(i);
-
-            return await Promise.all(blocksNumbers.map(async number => {
-                return await client.core.getBlockWithTransactions(number);
-            }));
-        },
-        initialPageParam: lastBlockNumber,
-        getNextPageParam: (lastPage, pages) => {
-            if (lastPage.length < limit) return null;
-
-            return lastBlockNumber - (limit * pages.length);
-        },
-        enabled: lastBlockNumber > 0
-    })
-}
-
-const useLastBlockNumberQuery = () => {
+const useBlocksQuery = (address: string) => {
     return useQuery({
-        queryKey: ['blocks', 'latest'],
-        queryFn: () => client.core.getBlockNumber(),
+        queryKey: ['blocks'],
+        queryFn: async () => {
+            const transfers = await client.core.getAssetTransfers({
+                fromAddress: address,
+                category: [
+                    AssetTransfersCategory.EXTERNAL,
+                    AssetTransfersCategory.INTERNAL,
+                    AssetTransfersCategory.ERC20,
+                ]
+            });
+
+            const blocksNums = transfers.transfers.map(transfer => {
+                return transfer.blockNum
+            });
+
+            const uniqueNums = [...new Set(blocksNums)];
+
+            return Promise.all(uniqueNums.reverse().map(async num => {
+                return await client.core.getBlockWithTransactions(num);
+            }))
+        },
+        enabled: address !== ""
     })
 }
 
 export {
     useBlocksQuery,
-    useLastBlockNumberQuery
 }

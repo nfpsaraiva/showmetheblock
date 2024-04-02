@@ -1,18 +1,18 @@
 import { FC } from "react";
-import { useBlocksQuery, useLastBlockNumberQuery } from "../../api/blockApi";
-import { Accordion, Button, Center, Loader, Stack, Text } from "@mantine/core";
+import { useBlocksQuery } from "../../api/blockApi";
+import { Accordion, Button, Center, Group, Loader, Stack, Text } from "@mantine/core";
 import Block from "../Block/Block";
+import { useShallow } from "zustand/react/shallow";
+import useStore from "../../state/store";
 
 const BlockList: FC = () => {
-  const { data: lastBlockNumber } = useLastBlockNumberQuery();
-  const {
-    data: blocks,
-    isLoading,
-    isError,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = useBlocksQuery(lastBlockNumber || 0);
+  const [
+    searchTerm,
+  ] = useStore(useShallow(state => [
+    state.searchTerm,
+  ]));
+
+  const { data: blocks, refetch, isLoading, isError } = useBlocksQuery(searchTerm);
 
   return (
     <Stack gap={"xl"} mx={"auto"}>
@@ -24,24 +24,18 @@ const BlockList: FC = () => {
       }
       {
         blocks &&
-        <Accordion variant="separated" radius={"md"} chevron={null}>
-          {
-            blocks.pages.map(page => {
-              return page.map(block => <Block block={block} />)
-            })
-          }
-        </Accordion>
+        <Stack align="center">
+          <Group>
+            <Button onClick={() => refetch()}>Refresh</Button>
+          </Group>
+          <Text>{blocks.length} blocks</Text>
+          <Accordion variant="separated" radius={"md"} chevron={null}>
+            {
+              blocks.map(block => <Block key={block.number} block={block} />)
+            }
+          </Accordion>
+        </Stack>
       }
-      <Button
-        onClick={() => fetchNextPage()}
-        disabled={!hasNextPage || isFetchingNextPage}
-      >
-        {isFetchingNextPage
-          ? 'Loading more...'
-          : hasNextPage
-            ? 'Load More'
-            : 'Nothing more to load'}
-      </Button>
     </Stack>
   )
 }
