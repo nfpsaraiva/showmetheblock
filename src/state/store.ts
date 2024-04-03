@@ -6,7 +6,7 @@ interface StoreState {
 }
 
 const useStore = create<StoreState>()(set => ({
-  searchTerm: '0xDa52002ddB5ad541d1559466Fd7505c562480dD8',
+  searchTerm: '',
   setSearchTerm: searchTerm => set(() => ({ searchTerm }))
 }));
 

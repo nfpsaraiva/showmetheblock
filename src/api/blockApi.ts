@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Alchemy, AssetTransfersCategory, Network } from "alchemy-sdk";
+import { Alchemy, AssetTransfersCategory, BlockWithTransactions, Network } from "alchemy-sdk";
 import Block from "../types/Block";
 
 const client = new Alchemy({
@@ -9,10 +9,9 @@ const client = new Alchemy({
 
 const useBlocksQuery = (address: string) => {
     return useQuery({
-        queryKey: ['blocks'],
+        queryKey: ['blocks', address],
         queryFn: async () => {
-            let blocks: Block[] = [];
-            
+
             const transfersFrom = await client.core.getAssetTransfers({
                 fromAddress: address,
                 category: [
@@ -22,86 +21,28 @@ const useBlocksQuery = (address: string) => {
             });
 
             const transfersTo = await client.core.getAssetTransfers({
-                fromAddress: address,
+                toAddress: address,
                 category: [
                     AssetTransfersCategory.EXTERNAL,
                     AssetTransfersCategory.ERC20,
                 ]
             });
 
-            for (const transfer of transfersFrom.transfers) {
-                const block = blocks.find(b => b.hexNum === transfer.blockNum);
+            const blockNumsFrom = transfersFrom.transfers.map(t => t.blockNum);
+            const blockNumsTo = transfersTo.transfers.map(t => t.blockNum);
 
-                if (!block) {
-                    blocks.push({
-                        hexNum: transfer.blockNum,
-                        number: 0,
-                        timestamp: 123,
-                        sents: [
-                            {
-                                address: transfer.to,
-                                value: transfer.value
-                            }
-                        ],
-                        receives: []
-                    });
+            const blocksNums = [...new Set([
+                ...blockNumsFrom,
+                ...blockNumsTo
+            ])];
 
-                    continue;
-                }
+            const blocks: BlockWithTransactions[] = [];
 
-                blocks = blocks.filter(b => b.hexNum !== transfer.blockNum);
-                blocks.push({
-                    ...block,
-                    sents: [
-                        ...block.sents,
-                        {
-                            address: transfer.to,
-                            value: transfer.value
-                        }
-                    ]
-                });
+            for (const num of blocksNums) {
+                const b = await client.core.getBlockWithTransactions(num);
+
+                blocks.push(b);
             }
-
-            for (const transfer of transfersTo.transfers) {
-                const block = blocks.find(b => b.hexNum === transfer.blockNum);
-
-                if (!block) {
-                    blocks.push({
-                        hexNum: transfer.blockNum,
-                        number: 0,
-                        timestamp: 123,
-                        sents: [],
-                        receives: [{
-                            address: transfer.from,
-                            value: transfer.value
-                        }]
-                    });
-
-                    continue;
-                }
-
-                blocks = blocks.filter(b => b.hexNum !== transfer.blockNum);
-                blocks.push({
-                    ...block,
-                    receives: [
-                        ...block.receives,
-                        {
-                            address: transfer.from,
-                            value: transfer.value
-                        }
-                    ]
-                });
-            }
-
-            blocks = await Promise.all(blocks.map(async block => {
-                const b = await client.core.getBlockWithTransactions(block.hexNum);
-
-                return {
-                    ...block,
-                    number: b.number,
-                    timestamp: b.timestamp
-                }
-            }));
 
             return blocks;
         },

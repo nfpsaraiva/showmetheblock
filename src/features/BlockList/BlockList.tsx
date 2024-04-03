@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { useBlocksQuery } from "../../api/blockApi";
-import { Accordion, ActionIcon, Button, Center, Group, Loader, Stack, Text } from "@mantine/core";
+import { Accordion, ActionIcon, Button, Card, Center, Group, Loader, Stack, Text } from "@mantine/core";
 import { useShallow } from "zustand/react/shallow";
 import useStore from "../../state/store";
 import { IconArrowDown, IconArrowUp, IconCube, IconExternalLink } from "@tabler/icons-react";
@@ -31,15 +31,12 @@ const BlockList: FC = () => {
       {
         blocks &&
         <Stack align="center">
-          <Group>
-            <Button onClick={() => refetch()}>Refresh</Button>
-          </Group>
           <Text>{blocks.length} blocks</Text>
           <Accordion variant="separated" radius={"md"} chevron={null}>
             {
               blocks.map(block => {
                 return (
-                  <Accordion.Item key={block.timestamp} value={block.hexNum}>
+                  <Accordion.Item key={block.timestamp} value={block.hash}>
                     <Accordion.Control icon={<IconCube size={20} />}>
                       <Group justify="space-between">
                         <Group>
@@ -48,8 +45,6 @@ const BlockList: FC = () => {
                           </Text>
                         </Group>
                         <Group>
-                          <Button leftSection={<IconArrowUp />}>{block.sents.length}</Button>
-                          <Button leftSection={<IconArrowDown />}>{block.receives.length}</Button>
                           <ActionIcon variant="subtle" component="a" target="_blank" href={`https://etherscan.io/block/${block.number}`}>
                             <IconExternalLink size={14} />
                           </ActionIcon>

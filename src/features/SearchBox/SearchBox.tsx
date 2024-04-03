@@ -1,29 +1,33 @@
-import { TextInput } from "@mantine/core";
-import { FC } from "react";
+import { Button, Group, TextInput } from "@mantine/core";
+import { FC, useState } from "react";
 import useStore from "../../state/store";
 import { useShallow } from "zustand/react/shallow";
 
 const SearchBox: FC = () => {
-  const [
-    searchTerm,
-    setSearchTerm
-  ] = useStore(useShallow(state => [
-    state.searchTerm,
-    state.setSearchTerm
-  ]));
+  const [value, setValue] = useState('');
+  const [setSearchTerm] = useStore(useShallow(state => [state.setSearchTerm]));
+
+  const submit = () => {
+    setSearchTerm(value);
+  }
 
   return (
-    <TextInput
-      placeholder="Search"
-      autoFocus
-      styles={{
-        input: {
-          textAlign: "center",
-        }
-      }}
-      value={searchTerm}
-      onChange={e => setSearchTerm(e.target.value)}
-    />
+    <Group>
+      <TextInput
+        placeholder="Search"
+        autoFocus
+        styles={{
+          input: {
+            textAlign: "center",
+          }
+        }}
+        value={value}
+        onChange={e => setValue(e.target.value)}
+      />
+      <Button onClick={submit}>
+        Show me the blocks
+      </Button>
+    </Group>
   )
 }
 
