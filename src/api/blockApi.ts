@@ -9,9 +9,7 @@ const client = new Alchemy({
 const useLastBlockNumber = () => {
     return useQuery({
         queryKey: ["lastBlockNumber"],
-        queryFn: async () => {
-            return await client.core.getBlockNumber()
-        }
+        queryFn: async () => await client.core.getBlockNumber()
     })
 }
 

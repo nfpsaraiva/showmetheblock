@@ -13,7 +13,7 @@ const Main: FC = () => {
         <Title>Show me the blocks</Title>
         <SearchBox />
         {
-          searchTerm === "" && !isNaN(Number(searchTerm))
+          searchTerm === "" || !isNaN(Number(searchTerm))
           ? <BlockList />
           : <AddressBalance />
         }
