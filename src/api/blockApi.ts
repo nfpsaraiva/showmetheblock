@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { Alchemy, AssetTransfersCategory, Network } from "alchemy-sdk";
+import { Alchemy, Network } from "alchemy-sdk";
 
 const client = new Alchemy({
     apiKey: import.meta.env.VITE_APP_ALCHEMY_API_KEY,

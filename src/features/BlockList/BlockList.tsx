@@ -1,9 +1,9 @@
 import { FC } from "react";
-import { useBlocksQuery, useLastBlockNumber } from "../../api/blockApi";
 import { Button, Center, Loader, Stack, Text } from "@mantine/core";
 import Block from "../Block/Block";
 import useStore from "../../state/store";
 import { useShallow } from "zustand/react/shallow";
+import { useBlocksQuery, useLastBlockNumber } from "../../api/BlockApi";
 
 const BlockList: FC = () => {
   const [searchTerm] = useStore(useShallow(state => [state.searchTerm]));

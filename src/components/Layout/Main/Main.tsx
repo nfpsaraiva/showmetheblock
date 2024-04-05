@@ -8,17 +8,14 @@ const Main: FC = () => {
   const [searchTerm] = useStore(useShallow(state => [state.searchTerm]));
 
   return (
-    <Center>
-      <Stack>
-        <Title>Show me the blocks</Title>
-        <SearchBox />
-        {
-          searchTerm === "" || !isNaN(Number(searchTerm))
+    <Stack align="center">
+      <SearchBox />
+      {
+        searchTerm === "" || !isNaN(Number(searchTerm))
           ? <BlockList />
           : <AddressBalance />
-        }
-      </Stack>
-    </Center>
+      }
+    </Stack>
   )
 }
 

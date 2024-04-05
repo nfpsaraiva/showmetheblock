@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useShallow } from "zustand/react/shallow";
 import useStore from "../../state/store";
-import { useAddressBalance } from "../../api/addressApi";
+import { useAddressBalance } from "../../api/AddressApi";
 import { Card } from "@mantine/core";
 import { Utils } from "alchemy-sdk";
 
