@@ -1,114 +1,42 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Alchemy, AssetTransfersCategory, Network } from "alchemy-sdk";
-import Block from "../types/Block";
 
 const client = new Alchemy({
     apiKey: import.meta.env.VITE_APP_ALCHEMY_API_KEY,
     network: Network.ETH_MAINNET,
 });
 
-const useBlocksQuery = (address: string) => {
+const useLastBlockNumber = () => {
     return useQuery({
-        queryKey: ['blocks'],
+        queryKey: ["lastBlockNumber"],
         queryFn: async () => {
-            let blocks: Block[] = [];
-            
-            const transfersFrom = await client.core.getAssetTransfers({
-                fromAddress: address,
-                category: [
-                    AssetTransfersCategory.EXTERNAL,
-                    AssetTransfersCategory.ERC20,
-                ]
-            });
+            return await client.core.getBlockNumber()
+        }
+    })
+}
 
-            const transfersTo = await client.core.getAssetTransfers({
-                fromAddress: address,
-                category: [
-                    AssetTransfersCategory.EXTERNAL,
-                    AssetTransfersCategory.ERC20,
-                ]
-            });
+const useBlocksQuery = (lastBlockNumber: number = 0, blockNumber: number = 0) => {
+    return useInfiniteQuery({
+        queryKey: ['blocks', lastBlockNumber, blockNumber],
+        initialPageParam: lastBlockNumber,
+        queryFn: async () => {
+            if (blockNumber > 0) return [await client.core.getBlockWithTransactions(blockNumber)];
 
-            for (const transfer of transfersFrom.transfers) {
-                const block = blocks.find(b => b.hexNum === transfer.blockNum);
+            const numbers = [];
+            for (let i = lastBlockNumber; i > (lastBlockNumber - 10); i--) numbers.push(i);
 
-                if (!block) {
-                    blocks.push({
-                        hexNum: transfer.blockNum,
-                        number: 0,
-                        timestamp: 123,
-                        sents: [
-                            {
-                                address: transfer.to,
-                                value: transfer.value
-                            }
-                        ],
-                        receives: []
-                    });
-
-                    continue;
-                }
-
-                blocks = blocks.filter(b => b.hexNum !== transfer.blockNum);
-                blocks.push({
-                    ...block,
-                    sents: [
-                        ...block.sents,
-                        {
-                            address: transfer.to,
-                            value: transfer.value
-                        }
-                    ]
-                });
-            }
-
-            for (const transfer of transfersTo.transfers) {
-                const block = blocks.find(b => b.hexNum === transfer.blockNum);
-
-                if (!block) {
-                    blocks.push({
-                        hexNum: transfer.blockNum,
-                        number: 0,
-                        timestamp: 123,
-                        sents: [],
-                        receives: [{
-                            address: transfer.from,
-                            value: transfer.value
-                        }]
-                    });
-
-                    continue;
-                }
-
-                blocks = blocks.filter(b => b.hexNum !== transfer.blockNum);
-                blocks.push({
-                    ...block,
-                    receives: [
-                        ...block.receives,
-                        {
-                            address: transfer.from,
-                            value: transfer.value
-                        }
-                    ]
-                });
-            }
-
-            blocks = await Promise.all(blocks.map(async block => {
-                const b = await client.core.getBlockWithTransactions(block.hexNum);
-
-                return {
-                    ...block,
-                    number: b.number,
-                    timestamp: b.timestamp
-                }
-            }));
-
-            return blocks;
+            return await Promise.all(numbers.map(async n => client.core.getBlockWithTransactions(n)));
         },
-        enabled: address !== ""
+        getNextPageParam: (lastPage, allPages) => {
+            if (lastPage.length === 0) return null;
+
+            return lastBlockNumber - allPages.length * 10
+        },
+        enabled: lastBlockNumber > 0 && !isNaN(blockNumber)
     })
 }
 
 export {
+    useLastBlockNumber,
     useBlocksQuery,
 }

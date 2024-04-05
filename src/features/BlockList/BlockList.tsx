@@ -1,24 +1,22 @@
 import { FC } from "react";
-import { useBlocksQuery } from "../../api/blockApi";
-import { Accordion, ActionIcon, Button, Center, Group, Loader, Stack, Text } from "@mantine/core";
-import { useShallow } from "zustand/react/shallow";
+import { useBlocksQuery, useLastBlockNumber } from "../../api/blockApi";
+import { Button, Center, Loader, Stack, Text } from "@mantine/core";
+import Block from "../Block/Block";
 import useStore from "../../state/store";
-import { IconArrowDown, IconArrowUp, IconCube, IconExternalLink } from "@tabler/icons-react";
+import { useShallow } from "zustand/react/shallow";
 
 const BlockList: FC = () => {
-  const [
-    searchTerm,
-  ] = useStore(useShallow(state => [
-    state.searchTerm,
-  ]));
+  const [searchTerm] = useStore(useShallow(state => [state.searchTerm]));
 
-  const { data: blocks, refetch, isLoading, isError } = useBlocksQuery(searchTerm);
-
-  const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp * 1000);
-
-    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-  }
+  const { data: lastBlockNumber } = useLastBlockNumber();
+  const {
+    data: blocks,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useBlocksQuery(lastBlockNumber || 0, Number(searchTerm));
 
   return (
     <Stack gap={"xl"} mx={"auto"}>
@@ -31,38 +29,20 @@ const BlockList: FC = () => {
       {
         blocks &&
         <Stack align="center">
-          <Group>
-            <Button onClick={() => refetch()}>Refresh</Button>
-          </Group>
-          <Text>{blocks.length} blocks</Text>
-          <Accordion variant="separated" radius={"md"} chevron={null}>
-            {
-              blocks.map(block => {
-                return (
-                  <Accordion.Item key={block.timestamp} value={block.hexNum}>
-                    <Accordion.Control icon={<IconCube size={20} />}>
-                      <Group justify="space-between">
-                        <Group>
-                          <Text>
-                            {formatDate(block.timestamp)}
-                          </Text>
-                        </Group>
-                        <Group>
-                          <Button leftSection={<IconArrowUp />}>{block.sents.length}</Button>
-                          <Button leftSection={<IconArrowDown />}>{block.receives.length}</Button>
-                          <ActionIcon variant="subtle" component="a" target="_blank" href={`https://etherscan.io/block/${block.number}`}>
-                            <IconExternalLink size={14} />
-                          </ActionIcon>
-                        </Group>
-                      </Group>
-                    </Accordion.Control>
-                    <Accordion.Panel>
-                    </Accordion.Panel>
-                  </Accordion.Item>
-                )
-              })
+          {
+            blocks.pages.map(page => {
+              return page.map(block => <Block key={block.number} block={block} />)
+            })
+          }
+          <Button
+            onClick={() => fetchNextPage()}
+            disabled={!hasNextPage || isFetchingNextPage}
+          >
+            {isFetchingNextPage
+              ? 'Loading more...'
+              : hasNextPage ? 'Load More' : 'Nothing more to load'
             }
-          </Accordion>
+          </Button>
         </Stack>
       }
     </Stack>
