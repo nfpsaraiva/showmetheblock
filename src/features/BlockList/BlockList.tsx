@@ -24,7 +24,7 @@ const BlockList: FC = () => {
         isLoading && <Center><Loader /></Center>
       }
       {
-        isError && <Center><Text>Something went wrong</Text></Center>
+        isError && <Center><Text>Nothing found</Text></Center>
       }
       {
         blocks &&
