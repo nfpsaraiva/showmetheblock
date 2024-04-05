@@ -10,7 +10,7 @@ const useAddressBalance = (address: string) => {
     return useQuery({
         queryKey: [address],
         queryFn: async () => await client.core.getBalance(address),
-        enabled: isNaN(Number(address)) && address !== ""
+        enabled: address !== ""
     })
 }
 
