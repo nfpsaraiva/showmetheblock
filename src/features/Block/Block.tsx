@@ -14,12 +14,7 @@ const Block: FC<BlockProps> = ({ block }: BlockProps) => {
 
   return (
     <>
-      <Tooltip label={formatDate(block.timestamp * 1000)}>
-        <Text size="xs" c={"dimmed"}>{timeAgo(block.timestamp * 1000)}</Text>
-      </Tooltip>
-      <Button size="xs" onClick={toggle} px={0} variant="transparent">
-        Open
-      </Button>
+      <Text size="xs" c={"dimmed"}>{timeAgo(block.timestamp * 1000)}</Text>
 
       <Collapse in={opened}>
         <Card>
