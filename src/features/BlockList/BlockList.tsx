@@ -43,7 +43,7 @@ const BlockList: FC = () => {
               blocks.pages.map(page => {
                 return page.map(block => {
                   return (
-                    <Timeline.Item key={block.number} bullet={<IconCube />} title={block.number}>
+                    <Timeline.Item key={block.number} bullet={<IconCube />}>
                       <Block block={block} />
                     </Timeline.Item>
                   )

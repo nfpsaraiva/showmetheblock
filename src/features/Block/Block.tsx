@@ -14,12 +14,12 @@ const Block: FC<BlockProps> = ({ block }: BlockProps) => {
 
   return (
     <>
-      <Text size="xs" c={"dimmed"}>{timeAgo(block.timestamp * 1000)}</Text>
+      <UnstyledButton onClick={toggle}>
+        <Text>{block.number}</Text>
+        <Text size="xs" c={"dimmed"}>{timeAgo(block.timestamp * 1000)}</Text>
+      </UnstyledButton>
 
       <Collapse in={opened}>
-        <Card>
-          asdf
-        </Card>
       </Collapse>
     </>
   )
