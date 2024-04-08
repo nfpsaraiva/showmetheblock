@@ -1,4 +1,4 @@
-import { Collapse, Text, UnstyledButton } from "@mantine/core";
+import { Card, Collapse, Group, Paper, Stack, Text, UnstyledButton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { BlockWithTransactions } from "alchemy-sdk";
 import { FC } from "react";
@@ -19,6 +19,9 @@ const Block: FC<BlockProps> = ({ block }: BlockProps) => {
       </UnstyledButton>
 
       <Collapse in={opened}>
+        <Stack mt={"md"}>
+          <Text size="xs">{block.transactions.length} transactions</Text>
+        </Stack>
       </Collapse>
     </>
   )
