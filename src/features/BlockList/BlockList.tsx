@@ -1,11 +1,10 @@
 import { FC } from "react";
-import { Anchor, Button, Center, Loader, Stack, Text, Timeline, Title } from "@mantine/core";
+import { Anchor, Center, Loader, Stack, Text, Timeline } from "@mantine/core";
 import Block from "../Block/Block";
 import useStore from "../../state/store";
 import { useShallow } from "zustand/react/shallow";
 import { useBlocksQuery, useLastBlockNumber } from "../../api/BlockApi";
-import { IconCube, IconDots, IconGitBranch, IconGitCommit, IconGitPullRequest, IconMessageDots, IconReload } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { IconCube, IconDots } from "@tabler/icons-react";
 
 const BlockList: FC = () => {
   const [searchTerm] = useStore(useShallow(state => [state.searchTerm]));
