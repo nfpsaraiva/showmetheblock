@@ -1,11 +1,13 @@
-import { Group, Title } from "@mantine/core";
+import { Group, Stack, Title } from "@mantine/core";
 import { FC } from "react";
+import { SearchBox } from "../../../features";
 
 const Header: FC = () => {
   return (
-    <Group h="100%" px={"md"}>
+    <Stack h="100%" py={"md"} align="center">
       <Title size={24} ff={"mono"} lts={4}>show me the block</Title>
-    </Group>
+      <SearchBox />
+    </Stack>
   )
 }
 

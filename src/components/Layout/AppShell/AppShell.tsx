@@ -8,7 +8,7 @@ import Header from "../Header/Header";
 const AppShell: FC = () => {
   return (
     <MantineAppShell
-      header={{ height: 60 }}
+      header={{ height: 120 }}
       footer={{ height: 60 }}
       padding="md"
     >

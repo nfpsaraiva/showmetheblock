@@ -1,4 +1,5 @@
-import { ActionIcon, Popover } from "@mantine/core";
+import { ActionIcon, Card, Collapse, Text, Timeline, Tooltip, UnstyledButton } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { IconCube } from "@tabler/icons-react";
 import { BlockWithTransactions } from "alchemy-sdk";
 import { FC } from "react";
@@ -8,6 +9,8 @@ interface BlockProps {
 }
 
 const Block: FC<BlockProps> = ({ block }: BlockProps) => {
+  const [opened, { toggle }] = useDisclosure(false);
+
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
 
@@ -15,16 +18,12 @@ const Block: FC<BlockProps> = ({ block }: BlockProps) => {
   }
 
   return (
-    <Popover>
-      <Popover.Target>
-        <ActionIcon>
-          <IconCube size={50} />
-        </ActionIcon>
-      </Popover.Target>
-      <Popover.Dropdown>
-        {formatDate(block.timestamp)}
-      </Popover.Dropdown>
-    </Popover>
+    <Timeline.Item bullet={<IconCube />} title={block.number}>
+      <UnstyledButton>
+        <Text c={"dimmed"}>{block.transactions.length} transactions</Text>
+        <Text size="xs" mt={4}>{formatDate(block.timestamp)}</Text>
+      </UnstyledButton>
+    </Timeline.Item>
   )
 }
 

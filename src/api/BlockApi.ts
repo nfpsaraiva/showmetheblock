@@ -9,7 +9,11 @@ const client = new Alchemy({
 const useLastBlockNumber = () => {
     return useQuery({
         queryKey: ["lastBlockNumber"],
-        queryFn: async () => await client.core.getBlockNumber()
+        queryFn: async () => await client.core.getBlockNumber(),
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        refetchIntervalInBackground: false,
+        refetchOnReconnect: false,
     })
 }
 
@@ -17,20 +21,25 @@ const useBlocksQuery = (lastBlockNumber: number = 0, blockNumber: number = 0) =>
     return useInfiniteQuery({
         queryKey: ['blocks', lastBlockNumber, blockNumber],
         initialPageParam: lastBlockNumber,
-        queryFn: async () => {
+        queryFn: async ({pageParam}) => {
             if (blockNumber > 0) return [await client.core.getBlockWithTransactions(blockNumber)];
 
             const numbers = [];
-            for (let i = lastBlockNumber; i > (lastBlockNumber - 10); i--) numbers.push(i);
+            for (let i = pageParam; i > (pageParam - 10); i--) numbers.push(i);
 
             return await Promise.all(numbers.map(async n => client.core.getBlockWithTransactions(n)));
         },
         getNextPageParam: (lastPage, allPages) => {
-            if (lastPage.length === 0) return null;
+            if (lastPage.length < 10) return null;
 
             return lastBlockNumber - allPages.length * 10
         },
-        enabled: lastBlockNumber > 0 && !isNaN(blockNumber)
+        enabled: lastBlockNumber > 0 && !isNaN(blockNumber),
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        refetchIntervalInBackground: false,
+        refetchOnReconnect: false,
+        
     })
 }
 

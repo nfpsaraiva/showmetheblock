@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Button, Center, Loader, Stack, Text } from "@mantine/core";
+import { Button, Center, Loader, Stack, Text, Timeline } from "@mantine/core";
 import Block from "../Block/Block";
 import useStore from "../../state/store";
 import { useShallow } from "zustand/react/shallow";
@@ -9,6 +9,7 @@ const BlockList: FC = () => {
   const [searchTerm] = useStore(useShallow(state => [state.searchTerm]));
 
   const { data: lastBlockNumber } = useLastBlockNumber();
+
   const {
     data: blocks,
     isLoading,
@@ -28,12 +29,14 @@ const BlockList: FC = () => {
       }
       {
         blocks &&
-        <Stack align="center">
-          {
-            blocks.pages.map(page => {
-              return page.map(block => <Block key={block.number} block={block} />)
-            })
-          }
+        <Stack>
+          <Timeline bulletSize={35} active={1} lineWidth={2}>
+            {
+              blocks.pages.map(page => {
+                return page.map(block => <Block key={block.number} block={block} />)
+              })
+            }
+          </Timeline>
           <Button
             onClick={() => fetchNextPage()}
             disabled={!hasNextPage || isFetchingNextPage}
