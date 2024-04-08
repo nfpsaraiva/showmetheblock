@@ -7,7 +7,7 @@ const ScrollToTop: FC = () => {
     const [scroll, scrollTo] = useWindowScroll();
 
     return (
-        <Affix visibleFrom="sm" position={{ bottom: 20, right: 20 }}>
+        <Affix visibleFrom="sm" position={{ bottom: 10, right: 20 }}>
             <Transition transition="slide-up" mounted={scroll.y > 0}>
                 {(transitionStyles) => (
                     <Button

@@ -1,13 +1,22 @@
-import { Group, Stack, Title } from "@mantine/core";
+import { ActionIcon, Group, Stack, Title } from "@mantine/core";
 import { FC } from "react";
-import { SearchBox } from "../../../features";
+import { ColorThemeSwitcher, SearchBox } from "../../../features";
+import { IconReload } from "@tabler/icons-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Header: FC = () => {
+  const queryClient = useQueryClient();
+
   return (
-    <Stack h="100%" py={"md"} align="center">
-      <Title ff={"mono"} lts={4}>show me the block</Title>
+    <Group h="100%" px={"md"} justify="space-between">
       <SearchBox />
-    </Stack>
+      <Group>
+        <ActionIcon variant="subtle" size={"lg"}>
+          <IconReload size={22} />
+        </ActionIcon>
+        <ColorThemeSwitcher />
+      </Group>
+    </Group>
   )
 }
 

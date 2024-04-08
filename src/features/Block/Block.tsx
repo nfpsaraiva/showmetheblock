@@ -13,18 +13,20 @@ const Block: FC<BlockProps> = ({ block }: BlockProps) => {
   const [opened, { toggle }] = useDisclosure(false);
 
   return (
-    <Timeline.Item bullet={<IconCube />} title={block.number}>
+    <>
       <Tooltip label={formatDate(block.timestamp * 1000)}>
         <Text size="xs" c={"dimmed"}>{timeAgo(block.timestamp * 1000)}</Text>
       </Tooltip>
-      <Button size="xs" onClick={toggle} px={0} variant="transparent">See more</Button>
+      <Button size="xs" onClick={toggle} px={0} variant="transparent">
+        Open
+      </Button>
 
       <Collapse in={opened}>
         <Card>
           asdf
         </Card>
       </Collapse>
-    </Timeline.Item>
+    </>
   )
 }
 

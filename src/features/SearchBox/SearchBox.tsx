@@ -14,13 +14,9 @@ const SearchBox: FC = () => {
 
   return (
     <TextInput
+      size="md"
       placeholder="Search"
       autoFocus
-      styles={{
-        input: {
-          textAlign: "center",
-        }
-      }}
       value={searchTerm}
       onChange={e => setSearchTerm(e.target.value)}
     />

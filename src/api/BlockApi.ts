@@ -10,36 +10,30 @@ const useLastBlockNumber = () => {
     return useQuery({
         queryKey: ["lastBlockNumber"],
         queryFn: async () => await client.core.getBlockNumber(),
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        refetchIntervalInBackground: false,
-        refetchOnReconnect: false,
     })
 }
 
 const useBlocksQuery = (lastBlockNumber: number = 0, blockNumber: number = 0) => {
+    const LIMIT = 10;
+
+    const number = blockNumber > 0 ? blockNumber : lastBlockNumber;
+
     return useInfiniteQuery({
         queryKey: ['blocks', lastBlockNumber, blockNumber],
-        initialPageParam: lastBlockNumber,
-        queryFn: async ({pageParam}) => {
-            if (blockNumber > 0) return [await client.core.getBlockWithTransactions(blockNumber)];
-
+        initialPageParam: number,
+        queryFn: async ({ pageParam }) => {
             const numbers = [];
-            for (let i = pageParam; i > (pageParam - 10); i--) numbers.push(i);
+            for (let i = pageParam; i > (pageParam - LIMIT); i--) numbers.push(i);
 
             return await Promise.all(numbers.map(async n => client.core.getBlockWithTransactions(n)));
         },
         getNextPageParam: (lastPage, allPages) => {
-            if (lastPage.length < 10) return null;
+            if (lastPage.length < LIMIT) return null;
 
-            return lastBlockNumber - allPages.length * 10
+            return number - allPages.length * LIMIT
         },
         enabled: lastBlockNumber > 0 && !isNaN(blockNumber),
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        refetchIntervalInBackground: false,
-        refetchOnReconnect: false,
-        
+        placeholderData: (previousData, previousQuery) => previousData
     })
 }
 

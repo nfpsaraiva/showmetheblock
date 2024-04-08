@@ -1,15 +1,13 @@
 import { FC } from "react";
-import { Button, Center, Loader, Stack, Text, Timeline } from "@mantine/core";
+import { Anchor, Button, Center, Loader, Stack, Text, Timeline, Title } from "@mantine/core";
 import Block from "../Block/Block";
 import useStore from "../../state/store";
 import { useShallow } from "zustand/react/shallow";
 import { useBlocksQuery, useLastBlockNumber } from "../../api/BlockApi";
-import { IconGitBranch, IconGitCommit, IconGitPullRequest, IconMessageDots, IconReload } from "@tabler/icons-react";
+import { IconCube, IconDots, IconGitBranch, IconGitCommit, IconGitPullRequest, IconMessageDots, IconReload } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 const BlockList: FC = () => {
-  const queryClient = useQueryClient();
-  
   const [searchTerm] = useStore(useShallow(state => [state.searchTerm]));
 
   const { data: lastBlockNumber } = useLastBlockNumber();
@@ -21,6 +19,7 @@ const BlockList: FC = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isFetching
   } = useBlocksQuery(lastBlockNumber || 0, Number(searchTerm));
 
   return (
@@ -34,30 +33,38 @@ const BlockList: FC = () => {
       {
         blocks &&
         <Stack gap={"xl"}>
-          <Button
-            variant="subtle"
-            leftSection={<IconReload size={14} />}
-            onClick={() => queryClient.invalidateQueries()}
-          >
-            Fetch new blocks
-          </Button>
-          <Timeline bulletSize={35} active={1} lineWidth={2}>
+          <Timeline bulletSize={35} active={isFetching ? 0 : -1} lineWidth={2}>
+            {
+              isFetching &&
+              <Timeline.Item key={0} bullet={<IconCube />} title="Fetching">
+                <Text c={"dimmed"} size="xs">Right now</Text>
+              </Timeline.Item>
+            }
             {
               blocks.pages.map(page => {
-                return page.map(block => <Block key={block.number} block={block} />)
+                return page.map(block => {
+                  return (
+                    <Timeline.Item key={block.number} bullet={<IconCube />} title={block.number}>
+                      <Block block={block} />
+                    </Timeline.Item>
+                  )
+                })
               })
             }
-          </Timeline>
-          <Button
-            onClick={() => fetchNextPage()}
-            disabled={!hasNextPage || isFetchingNextPage}
-            variant="subtle"
-          >
-            {isFetchingNextPage
-              ? 'Loading more...'
-              : hasNextPage ? 'Load More' : 'Nothing more to load'
+            {
+              isFetchingNextPage
+                ? <Timeline.Item bullet={<IconDots />} title="Fetching" styles={{ item: { cursor: "pointer" } }}>
+                  <Anchor size="xs" c={"dimmed"}>
+                    Scroll to top
+                  </Anchor>
+                </Timeline.Item>
+                : <Timeline.Item onClick={() => fetchNextPage()} bullet={<IconDots />} title="Load more" styles={{ item: { cursor: "pointer" } }}>
+                  <Anchor size="xs" c={"dimmed"}>
+                    Scroll to top
+                  </Anchor>
+                </Timeline.Item>
             }
-          </Button>
+          </Timeline>
         </Stack>
       }
     </Stack>
