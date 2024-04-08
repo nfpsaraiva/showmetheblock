@@ -5,7 +5,7 @@ import { SearchBox } from "../../../features";
 const Header: FC = () => {
   return (
     <Stack h="100%" py={"md"} align="center">
-      <Title size={24} ff={"mono"} lts={4}>show me the block</Title>
+      <Title ff={"mono"} lts={4}>show me the block</Title>
       <SearchBox />
     </Stack>
   )

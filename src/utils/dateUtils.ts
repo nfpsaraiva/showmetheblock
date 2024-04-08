@@ -1,3 +1,9 @@
+const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp);
+
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+}
+
 const timeAgo = (timestamp: number) => {
     const currentDate = new Date();
     const previousDate = new Date(timestamp);
@@ -23,5 +29,6 @@ const timeAgo = (timestamp: number) => {
 }
 
 export {
+    formatDate,
     timeAgo
 }
