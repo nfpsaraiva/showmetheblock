@@ -1,9 +1,8 @@
-import { ActionIcon, Anchor, Button, Card, Collapse, Text, Timeline, Tooltip, UnstyledButton } from "@mantine/core";
+import { Collapse, Text, UnstyledButton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconCube } from "@tabler/icons-react";
 import { BlockWithTransactions } from "alchemy-sdk";
 import { FC } from "react";
-import { formatDate, timeAgo } from "../../utils/dateUtils";
+import { timeAgo } from "../../utils/dateUtils";
 
 interface BlockProps {
   block: BlockWithTransactions
