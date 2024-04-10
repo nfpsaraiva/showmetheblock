@@ -15,7 +15,8 @@ const SearchBox: FC = () => {
   return (
     <TextInput
       size="md"
-      placeholder="Search"
+      miw={350}
+      placeholder="Search by Block Number or Address"
       autoFocus
       value={searchTerm}
       onChange={e => setSearchTerm(e.target.value)}

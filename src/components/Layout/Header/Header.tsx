@@ -1,19 +1,17 @@
-import { ActionIcon, Group } from "@mantine/core";
+import { Button, Group, Stack, Title } from "@mantine/core";
 import { FC } from "react";
-import { ColorThemeSwitcher, SearchBox } from "../../../features";
-import { IconReload } from "@tabler/icons-react";
+import { SearchBox } from "../../../features";
 
 const Header: FC = () => {
   return (
-    <Group h="100%" px={"md"} justify="space-between">
+    <Stack align="center" justify="space-between" h={"100%"} py={"md"}>
+      <Title size={"h2"} lts={6}>show me the blocks</Title>
       <SearchBox />
-      <Group>
-        <ActionIcon variant="subtle" size={"lg"}>
-          <IconReload size={22} />
-        </ActionIcon>
-        <ColorThemeSwitcher />
+      <Group justify="space-between">
+        <Button size="xs">Fetch new blocks</Button>
+        <Button size="xs">Clear</Button>
       </Group>
-    </Group>
+    </Stack>
   )
 }
 
