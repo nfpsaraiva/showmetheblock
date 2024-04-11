@@ -8,7 +8,7 @@ const Main: FC = () => {
   const [searchTerm] = useStore(useShallow(state => [state.searchTerm]));
 
   return (
-    <Stack align="center">
+    <Stack align="center" py={"lg"}>
       {
         searchTerm === "" || !isNaN(Number(searchTerm))
           ? <BlockList />

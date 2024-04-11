@@ -16,7 +16,6 @@ const BlockList: FC = () => {
     isLoading,
     isError,
     fetchNextPage,
-    hasNextPage,
     isFetchingNextPage,
     isFetching
   } = useBlocksQuery(lastBlockNumber || 0, Number(searchTerm));
