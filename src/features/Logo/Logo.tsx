@@ -5,8 +5,8 @@ import logo from "./logo.png";
 const Logo: FC = () => {
   return (
     <Group align="flex-end" ta={"center"}>
-      {/* <Image src={logo} w={40} /> */}
-      <Title lts={6}>show me the blocks</Title>
+      <Title visibleFrom="sm" lts={6}>show me the blocks</Title>
+      <Title hiddenFrom="sm" size={"h3"} lts={6}>show me the blocks</Title>
     </Group>
   )
 };

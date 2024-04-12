@@ -10,15 +10,15 @@ const AppShell: FC = () => {
   return (
     <MantineAppShell
       layout="alt"
-      header={{ height: 140 }}
       footer={{ height: 60 }}
-      padding="md"
     >
-      <MantineAppShell.Header withBorder={false} >
-        <Header />
-      </MantineAppShell.Header>
-      <MantineAppShell.Main component={ScrollArea} className={classes.main}>
-        <Main />
+      <MantineAppShell.Main>
+        <MantineAppShell.Section>
+          <Header />
+        </MantineAppShell.Section>
+        <MantineAppShell.Section component={ScrollArea} className={classes.main} grow>
+          <Main />
+        </MantineAppShell.Section>
         <ScrollToTop />
       </MantineAppShell.Main>
       <MantineAppShell.Footer withBorder={false}>

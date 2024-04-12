@@ -3,11 +3,12 @@ import { useWindowScroll } from "@mantine/hooks";
 import { IconArrowUp } from "@tabler/icons-react";
 import { FC } from "react";
 
+
 const ScrollToTop: FC = () => {
     const [scroll, scrollTo] = useWindowScroll();
 
     return (
-        <Affix position={{ bottom: 10, right: 20 }}>
+        <Affix position={{ bottom: 15, right: 20 }}>
             <Transition transition="slide-up" mounted={scroll.y > 0}>
                 {(transitionStyles) => (
                     <>
