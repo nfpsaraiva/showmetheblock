@@ -5,8 +5,10 @@ import useStore from "../../state/store";
 import { useShallow } from "zustand/react/shallow";
 import { useBlocksQuery, useLastBlockNumber } from "../../api/BlockApi";
 import { IconCube, IconDots } from "@tabler/icons-react";
+import { useHover } from "@mantine/hooks";
 
 const BlockList: FC = () => {
+
   const [searchTerm] = useStore(useShallow(state => [state.searchTerm]));
 
   const { data: lastBlockNumber } = useLastBlockNumber();
@@ -20,6 +22,9 @@ const BlockList: FC = () => {
     isFetching
   } = useBlocksQuery(lastBlockNumber || 0, Number(searchTerm));
 
+  const bulletSize = 45;
+  const iconSize = 30;
+
   return (
     <Stack gap={"xl"} mx={"auto"}>
       {
@@ -31,10 +36,10 @@ const BlockList: FC = () => {
       {
         blocks &&
         <Stack gap={"xl"}>
-          <Timeline bulletSize={35} active={isFetching ? 0 : -1} lineWidth={2}>
+          <Timeline bulletSize={bulletSize} active={isFetching ? 0 : -1} lineWidth={2}>
             {
               isFetching &&
-              <Timeline.Item key={0} bullet={<IconCube />} title="Fetching">
+              <Timeline.Item key={0} bullet={<IconCube size={iconSize} />} title="Fetching">
                 <Text c={"dimmed"} size="xs">Right now</Text>
               </Timeline.Item>
             }
@@ -42,7 +47,7 @@ const BlockList: FC = () => {
               blocks.pages.map(page => {
                 return page.map(block => {
                   return (
-                    <Timeline.Item key={block.number} bullet={<IconCube />}>
+                    <Timeline.Item key={block.number} bullet={<IconCube size={iconSize} />}>
                       <Block block={block} />
                     </Timeline.Item>
                   )
@@ -51,12 +56,12 @@ const BlockList: FC = () => {
             }
             {
               isFetchingNextPage
-                ? <Timeline.Item bullet={<IconDots />} title="Fetching" styles={{ item: { cursor: "pointer" } }}>
+                ? <Timeline.Item bullet={<IconDots size={iconSize} />} title="Fetching" styles={{ item: { cursor: "pointer" } }}>
                   <Anchor size="xs" c={"dimmed"}>
                     Scroll to top
                   </Anchor>
                 </Timeline.Item>
-                : <Timeline.Item onClick={() => fetchNextPage()} bullet={<IconDots />} title="Load more" styles={{ item: { cursor: "pointer" } }}>
+                : <Timeline.Item onClick={() => fetchNextPage()} bullet={<IconDots size={iconSize} />} title="Load more" styles={{ item: { cursor: "pointer" } }}>
                   <Anchor size="xs" c={"dimmed"}>
                     Scroll to top
                   </Anchor>
