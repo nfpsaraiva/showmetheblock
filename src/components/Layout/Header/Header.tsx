@@ -6,18 +6,20 @@ import { useDisclosure } from "@mantine/hooks";
 
 const Header: FC = () => {
   const [searchOpened, searchHandle] = useDisclosure(false);
+  const [adjustmentsOpened, adjustmentsHandle] = useDisclosure(false);
+  const [settingsOpened, settingsHandle] = useDisclosure(false);
 
   return (
     <Stack align="center" h={"100%"} py={"md"}>
       <Logo />
       <Group>
-        <ActionIcon size={"lg"} variant="subtle" onClick={searchHandle.toggle}>
+        <ActionIcon size={"lg"} variant={searchOpened ? 'filled': 'subtle'} onClick={searchHandle.toggle}>
           <IconSearch size={18} />
         </ActionIcon>
-        <ActionIcon size={"lg"} variant="subtle">
+        <ActionIcon size={"lg"} variant={adjustmentsOpened ? 'filled': 'subtle'} onClick={adjustmentsHandle.toggle}>
           <IconAdjustmentsHorizontal size={18} />
         </ActionIcon>
-        <ActionIcon size={"lg"} variant="subtle">
+        <ActionIcon size={"lg"} variant={settingsOpened ? 'filled': 'subtle'} onClick={settingsHandle.toggle}>
           <IconSettings size={18} />
         </ActionIcon>
       </Group>

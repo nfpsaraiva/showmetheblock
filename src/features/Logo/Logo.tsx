@@ -1,6 +1,5 @@
-import { Group, Image, Title } from "@mantine/core";
+import { Group, Title } from "@mantine/core";
 import { FC } from "react";
-import logo from "./logo.png";
 
 const Logo: FC = () => {
   return (
