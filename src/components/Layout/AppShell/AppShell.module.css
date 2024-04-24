@@ -1,3 +1,7 @@
 .main {
+  position: relative;
+  max-width: 75%;
+  margin: auto;
+  border-radius: 20px;
   background-color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-9));
 }

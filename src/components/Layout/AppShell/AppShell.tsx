@@ -1,4 +1,4 @@
-import { AppShell as MantineAppShell, ScrollArea } from "@mantine/core";
+import { AppShell as MantineAppShell, ScrollArea, Text } from "@mantine/core";
 import { FC } from "react";
 import Footer from "../Footer/Footer";
 import ScrollToTop from "../../../features/ScrollToTop/ScrollToTop";
@@ -18,6 +18,7 @@ const AppShell: FC = () => {
         </MantineAppShell.Section>
         <MantineAppShell.Section component={ScrollArea} className={classes.main} grow>
           <Main />
+          <Text pos={"absolute"} right={25} top={20}>The blockchain</Text>
         </MantineAppShell.Section>
         <ScrollToTop />
       </MantineAppShell.Main>

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Anchor, Center, Loader, Stack, Text, Timeline } from "@mantine/core";
+import { Anchor, Center, Loader, ScrollArea, Stack, Text, Timeline } from "@mantine/core";
 import Block from "../Block/Block";
 import useStore from "../../state/store";
 import { useShallow } from "zustand/react/shallow";
@@ -26,7 +26,7 @@ const BlockList: FC = () => {
   const iconSize = 30;
 
   return (
-    <Stack gap={"xl"} mx={"auto"}>
+    <ScrollArea h={"60vh"} mx={"auto"}>
       {
         isLoading && <Center><Loader /></Center>
       }
@@ -36,7 +36,7 @@ const BlockList: FC = () => {
       {
         blocks &&
         <Stack gap={"xl"}>
-          <Timeline bulletSize={bulletSize} active={isFetching ? 0 : -1} lineWidth={2}>
+          <Timeline style={{textAlign: "center"}} miw={300} bulletSize={bulletSize} active={isFetching ? 0 : -1} lineWidth={2}>
             {
               isFetching &&
               <Timeline.Item key={0} bullet={<IconCube size={iconSize} />} title="Fetching">
@@ -70,7 +70,7 @@ const BlockList: FC = () => {
           </Timeline>
         </Stack>
       }
-    </Stack>
+    </ScrollArea>
   )
 }
 

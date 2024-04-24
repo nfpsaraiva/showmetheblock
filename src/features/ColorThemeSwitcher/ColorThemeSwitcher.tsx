@@ -11,7 +11,7 @@ const ColorThemeSwitcher: FC = () => {
   return (
     <ActionIcon
       onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
-      variant="default"
+      variant="subtle"
       size="lg"
       aria-label="Toggle color scheme"
     >

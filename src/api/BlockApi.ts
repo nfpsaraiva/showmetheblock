@@ -10,6 +10,10 @@ const useLastBlockNumber = () => {
     return useQuery({
         queryKey: ["lastBlockNumber"],
         queryFn: async () => await client.core.getBlockNumber(),
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        refetchIntervalInBackground: false,
+        refetchOnReconnect: false
     })
 }
 
@@ -36,7 +40,11 @@ const useBlocksQuery = (lastBlockNumber: number = 0, blockNumber: number = 0) =>
             return number - allPages.length * LIMIT
         },
         enabled: lastBlockNumber > 0 && !isNaN(blockNumber),
-        placeholderData: (previousData, previousQuery) => previousData
+        placeholderData: (previousData, previousQuery) => previousData,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        refetchIntervalInBackground: false,
+        refetchOnReconnect: false
     })
 }
 
