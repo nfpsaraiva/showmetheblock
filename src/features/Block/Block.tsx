@@ -23,12 +23,12 @@ const Block: FC<BlockProps> = ({ block }: BlockProps) => {
 
   return (
     <>
-      <Group justify="space-between" gap={"xl"}>
+      <Group grow justify="space-between" gap={0}>
         <UnstyledButton onClick={blockHandle.toggle}>
           <Text>{block.number}</Text>
           <Text size="sm" c={"dimmed"}>{blockDate}</Text>
         </UnstyledButton>
-        <ActionIcon variant="transparent" onClick={blockHandle.toggle}>
+        <ActionIcon ta={"end"} variant="transparent" onClick={blockHandle.toggle}>
           {
             blockOpened 
             ? <IconChevronUp />

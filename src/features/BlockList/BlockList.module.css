@@ -1,0 +1,14 @@
+.scrollArea {
+  width: 100%;
+}
+
+.timeLine {
+  width: 50%;
+  margin: auto;
+}
+
+/* @media (min-width: 768px) {
+  .scrollArea {
+    height: 60vh;
+  }
+} */
