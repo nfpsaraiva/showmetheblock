@@ -5,8 +5,6 @@ import useStore from "../../state/store";
 import { useShallow } from "zustand/react/shallow";
 import { useBlocksQuery, useLastBlockNumber } from "../../api/BlockApi";
 import { IconCube, IconDots } from "@tabler/icons-react";
-import { useHover } from "@mantine/hooks";
-import classes from "./BlockList.module.css";
 
 const BlockList: FC = () => {
 
@@ -23,11 +21,11 @@ const BlockList: FC = () => {
     isFetching
   } = useBlocksQuery(lastBlockNumber || 0, Number(searchTerm));
 
-  const bulletSize = 45;
-  const iconSize = 30;
+  const bulletSize = 36;
+  const iconSize = 25;
 
   return (
-    <ScrollArea offsetScrollbars className={classes.scrollArea}>
+    <ScrollArea offsetScrollbars>
       {
         isLoading && <Center><Loader /></Center>
       }
@@ -37,7 +35,7 @@ const BlockList: FC = () => {
       {
         blocks &&
         <Stack gap={"xl"}>
-          <Timeline style={{textAlign: "center"}} className={classes.timeLine} bulletSize={bulletSize} active={isFetching ? 0 : -1} lineWidth={2}>
+          <Timeline style={{textAlign: "center"}}  bulletSize={bulletSize} active={isFetching ? 0 : -1} lineWidth={2}>
             {
               isFetching &&
               <Timeline.Item key={0} bullet={<IconCube size={iconSize} />} title="Fetching">
