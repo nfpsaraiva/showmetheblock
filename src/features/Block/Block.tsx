@@ -1,6 +1,6 @@
-import { Anchor, Collapse, Container, Stack, Text, UnstyledButton } from "@mantine/core";
+import { Anchor, Collapse, Stack, Text, UnstyledButton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { BlockWithTransactions } from "alchemy-sdk";
+import { BlockWithTransactions, Utils } from "alchemy-sdk";
 import { FC } from "react";
 import { formatDate, timeAgo } from "../../utils/dateUtils";
 
@@ -15,6 +15,8 @@ const Block: FC<BlockProps> = ({ block }: BlockProps) => {
 
   const blockDate = timeAgo(block.timestamp * 1000);
 
+  const value = block.transactions.reduce((sum, t) => sum + Number(t.value.toString()), 0)
+
   return (
     <>
       <UnstyledButton onClick={blockHandle.toggle}>
@@ -25,6 +27,7 @@ const Block: FC<BlockProps> = ({ block }: BlockProps) => {
       <Collapse in={blockOpened}>
         <Stack mt={"lg"} gap={4}>
           <Text size="xs">{block.transactions.length} transactions</Text>
+          <Text size="xs" lineClamp={2}>Total value: {value}</Text>
           <Text size="xs" lineClamp={2}>{formatDate(block.timestamp * 1000)}</Text>
           <Anchor size="xs" href={externalUrl} target="_blank">Full details</Anchor>
         </Stack>
