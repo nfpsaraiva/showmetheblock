@@ -18,7 +18,6 @@ const AppShell: FC = () => {
         </MantineAppShell.Section>
         <MantineAppShell.Section component={ScrollArea} className={classes.main} grow>
           <Main />
-          <Text pos={"absolute"} right={25} top={20} fw={700} lts={2}>blockchain</Text>
         </MantineAppShell.Section>
         <ScrollToTop />
       </MantineAppShell.Main>

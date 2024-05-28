@@ -7,7 +7,6 @@ import { useBlocksQuery, useLastBlockNumber } from "../../api/BlockApi";
 import { IconCube, IconDots } from "@tabler/icons-react";
 
 const BlockList: FC = () => {
-
   const [searchTerm] = useStore(useShallow(state => [state.searchTerm]));
 
   const { data: lastBlockNumber } = useLastBlockNumber();
@@ -23,6 +22,8 @@ const BlockList: FC = () => {
 
   const bulletSize = 36;
   const iconSize = 25;
+
+  const numBlocks = blocks?.pages.reduce((acc, page) => acc += page.length, 0);
 
   return (
     <ScrollArea offsetScrollbars>
@@ -55,14 +56,14 @@ const BlockList: FC = () => {
           {
             isFetchingNextPage
               ? <Timeline.Item bullet={<IconDots size={iconSize} />} title="Fetching" styles={{ item: { cursor: "pointer" } }}>
-                <Anchor size="xs" c={"dimmed"}>
-                  Scroll to top
-                </Anchor>
+                <Text size="xs" c={"dimmed"}>
+                  Getting new blocks
+                </Text>
               </Timeline.Item>
               : <Timeline.Item onClick={() => fetchNextPage()} bullet={<IconDots size={iconSize} />} title="Load more" styles={{ item: { cursor: "pointer" } }}>
-                <Anchor size="xs" c={"dimmed"}>
-                  Scroll to top
-                </Anchor>
+                <Text size="xs" c={"dimmed"}>
+                  {numBlocks} blocks fetched
+                </Text>
               </Timeline.Item>
           }
         </Timeline>

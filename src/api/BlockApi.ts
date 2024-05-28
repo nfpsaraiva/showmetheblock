@@ -30,10 +30,7 @@ const useBlocksQuery = (lastBlockNumber: number = 0, blockNumber: number = 0) =>
             const limit = pageParam < 10 ? pageParam : LIMIT;
             for (let i = pageParam; i > (pageParam - limit); i--) numbers.push(i);
 
-            const blocks = await Promise.all(numbers.map(async n => client.core.getBlockWithTransactions(n)));
-
-            console.log(blocks);
-            return blocks;
+            return await Promise.all(numbers.map(async n => client.core.getBlockWithTransactions(n)));
         },
         getNextPageParam: (lastPage, allPages) => {
             if (lastPage.length < LIMIT) return null;

@@ -15,7 +15,7 @@ const Block: FC<BlockProps> = ({ block }: BlockProps) => {
 
   const blockDate = timeAgo(block.timestamp * 1000);
 
-  const value = block.transactions.reduce((sum, t) => sum + Number(t.value.toString()), 0)
+  const value = block.transactions.reduce((sum, t) => sum + Number(Utils.formatEther(t.value)), 0);
 
   return (
     <>
@@ -27,7 +27,7 @@ const Block: FC<BlockProps> = ({ block }: BlockProps) => {
       <Collapse in={blockOpened}>
         <Stack mt={"lg"} gap={4}>
           <Text size="xs">{block.transactions.length} transactions</Text>
-          <Text size="xs" lineClamp={2}>Total value: {value}</Text>
+          <Text size="xs" lineClamp={2}>{value.toFixed(2)} ETH transacted</Text>
           <Text size="xs" lineClamp={2}>{formatDate(block.timestamp * 1000)}</Text>
           <Anchor size="xs" href={externalUrl} target="_blank">Full details</Anchor>
         </Stack>
