@@ -2,18 +2,17 @@ import { Anchor, Collapse, Stack, Text, UnstyledButton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { BlockWithTransactions, Utils } from "alchemy-sdk";
 import { FC } from "react";
-import { formatDate, timeAgo } from "../../utils/dateUtils";
+import { formatDate } from "../../utils/dateUtils";
 
 interface BlockProps {
   block: BlockWithTransactions,
+  blockTimeAgo: string
 }
 
-const Block: FC<BlockProps> = ({ block }: BlockProps) => {
+const Block: FC<BlockProps> = ({ block, blockTimeAgo }: BlockProps) => {
   const [blockOpened, blockHandle] = useDisclosure(false);
 
   const externalUrl = `https://etherscan.io/block/${block.number}/`;
-
-  const blockDate = timeAgo(block.timestamp * 1000);
 
   const value = block.transactions.reduce((sum, t) => sum + Number(Utils.formatEther(t.value)), 0);
 
@@ -21,7 +20,7 @@ const Block: FC<BlockProps> = ({ block }: BlockProps) => {
     <>
       <UnstyledButton onClick={blockHandle.toggle}>
         <Text>{block.number}</Text>
-        <Text size="sm" c={"dimmed"}>{blockDate}</Text>
+        <Text size="sm" c={"dimmed"}>{blockTimeAgo}</Text>
       </UnstyledButton>
 
       <Collapse in={blockOpened}>

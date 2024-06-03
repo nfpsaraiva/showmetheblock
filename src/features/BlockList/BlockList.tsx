@@ -1,10 +1,11 @@
 import { FC } from "react";
-import { Anchor, Center, Loader, ScrollArea, Text, Timeline } from "@mantine/core";
+import { Center, Loader, ScrollArea, Text, Timeline } from "@mantine/core";
 import Block from "../Block/Block";
 import useStore from "../../state/store";
 import { useShallow } from "zustand/react/shallow";
 import { useBlocksQuery, useLastBlockNumber } from "../../api/BlockApi";
 import { IconCube, IconDots } from "@tabler/icons-react";
+import { timeAgo } from "../../utils/dateUtils";
 
 const BlockList: FC = () => {
   const [searchTerm] = useStore(useShallow(state => [state.searchTerm]));
@@ -45,9 +46,11 @@ const BlockList: FC = () => {
           {
             blocks.pages.map(page => {
               return page.map(block => {
+                const blockTimeAgo = timeAgo(block.timestamp * 1000);
+
                 return (
                   <Timeline.Item key={block.number} bullet={<IconCube size={iconSize} />}>
-                    <Block block={block} />
+                    <Block block={block} blockTimeAgo={blockTimeAgo} />
                   </Timeline.Item>
                 )
               })
