@@ -13,10 +13,9 @@ const AboutModal: FC<AboutModalProps> = ({
   return (
     <Modal opened={opened} onClose={close} title="About">
       <Text>
-        Streamlined tool designed to help users explore their ERC-20 token holdings.
-        The app lets you check all your current ERC-20 from a given address as well as their current balance.
+        User-friendly tool designed to provide insights into the Ethereum blockchain.
+        The app lets you search for a block number, view the total transactions as well as the total value transacted.
       </Text>
-
     </Modal>
   )
 }

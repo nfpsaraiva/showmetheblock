@@ -1,7 +1,5 @@
 import { Box, Card, Center, Stack } from "@mantine/core";
-import Header from "../features/Header/Header";
-import Menu from "../features/Menu/Menu";
-import { BlockList, SearchBox } from "../features";
+import { BlockList, Header, Menu, SearchBox } from "../features";
 
 export function HomePage() {
   return (

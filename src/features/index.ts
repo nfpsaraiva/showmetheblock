@@ -1,17 +1,13 @@
-import AddressBalance from "./AddressBalance/AddressBalance";
 import Block from "./Block/Block";
 import BlockList from "./BlockList/BlockList";
-import ColorThemeSwitcher from "./ColorThemeSwitcher/ColorThemeSwitcher";
-import Logo from "./Logo/Logo";
-import ScrollToTop from "./ScrollToTop/ScrollToTop";
+import Header from "./Header/Header";
+import Menu from "./Menu/Menu";
 import SearchBox from "./SearchBox/SearchBox";
 
 export {
-  AddressBalance,
   Block,
   BlockList,
-  ColorThemeSwitcher,
-  Logo,
-  ScrollToTop,
+  Header,
+  Menu,
   SearchBox
 }
